@@ -23,6 +23,7 @@ Change the value to a higher one to increase it.
 2. find the variable that is for the background, then insert a hex color and remake the game 
 to change the backdrop color.
 
+    Variable was not found. I had to import files in order to change color of background to light blue.
 
 ## Brainstorming game ideas
 
