@@ -16,6 +16,10 @@ Code for if the player intersects the treasure, give it a random location and up
 
 ## Planning required changes
 
+Find the variable that increases player speed
+
+Change the value to a higher one to increase it.
+
 ## Brainstorming game ideas
 
 ## Plan for implementing game
