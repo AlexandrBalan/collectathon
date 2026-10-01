@@ -80,6 +80,22 @@ int main()
             player.set_y(player.y() + SPEED);
         }
 
+        if (player.x() > MAX_X) {
+            player.set_x(MIN_X);
+        }
+
+        if (player.x() < MIN_X) {
+            player.set_x(MAX_X);
+        }
+
+        if (player.y() > MAX_Y) {
+            player.set_y(MIN_Y);
+        }
+
+        if (player.y() < MIN_Y) {
+            player.set_y(MAX_Y);
+        }
+
         if(bn::keypad::start_pressed()) {
             player.set_x(player_start_x);
             player.set_y(player_start_y);

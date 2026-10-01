@@ -33,6 +33,8 @@ to change the backdrop color.
 4. Create a if statement for the reset keybind, just create another if statement and just reset the 
 x position and the y position, along with the treasure and the score!
 
+5. Probably use the already made variables (MIN_X, MIN_Y, etc) and check to see if the player if above or below those variables. If so, put them opposite side so the player loops
+
 ## Brainstorming game ideas
 
 ## Plan for implementing game
