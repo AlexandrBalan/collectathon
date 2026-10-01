@@ -66,6 +66,7 @@ int main()
         {
             player.set_x(player.x() - SPEED);
         }
+
         if (bn::keypad::right_held())
         {
             player.set_x(player.x() + SPEED);
@@ -77,6 +78,16 @@ int main()
         if (bn::keypad::down_held())
         {
             player.set_y(player.y() + SPEED);
+        }
+
+        if(bn::keypad::start_pressed()) {
+            player.set_x(player_start_x);
+            player.set_y(player_start_y);
+
+            treasure.set_x(treasure_start_x);
+            treasure.set_y(treasure_start_y);
+
+            score = 0;
         }
 
         // The bounding boxes of the player and treasure, snapped to integer pixels

@@ -30,6 +30,9 @@ to change the backdrop color.
     Made variable of static constexpr for x and y of each character.
     Speed was also changed to a lower amount 
 
+4. Create a if statement for the reset keybind, just create another if statement and just reset the 
+x position and the y position, along with the treasure and the score!
+
 ## Brainstorming game ideas
 
 ## Plan for implementing game
