@@ -75,8 +75,7 @@ We will now artificially trigger a merge conflict. When we follow good git pract
     ```
     git status
     ```
-1. ONLY the error partner should open the instructions.md in VSCode. There should be both changes and extra text separating them. It will look something like this:
-    ![An image showing a merge conflict in VS Code](./images/conflict.PNG)
+1. ONLY the error partner should open the instructions.md in VSCode. There should be both changes and extra text separating them.
 1. Resolve the merge conflict to include both of the changes and delete the extra lines.
 1. Mark the conflicted file as resolved with git add.
     ```
@@ -108,7 +107,7 @@ We will now artificially trigger a merge conflict. When we follow good git pract
     make
     ```
 1. Both partners should try running the game in mGBA. Race each other, see who can get 10 points first!
-1. Try copying the game to the phyical GBA and make sure it works there.
+1. Try copying the game to the physical GBA and make sure it works there.
 
 ## Exploring main.cpp
 
