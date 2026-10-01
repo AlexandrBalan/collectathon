@@ -35,6 +35,11 @@ x position and the y position, along with the treasure and the score!
 
 5. Probably use the already made variables (MIN_X, MIN_Y, etc) and check to see if the player if above or below those variables. If so, put them opposite side so the player loops
 
+
+6. add a if statement and say when the player presses the A button on the gameboard, the speed
+is increased by a lot, and create a int variable that starts at 3 and whenever they click the 
+keybind it would get subtracted by one.
+
 ## Brainstorming game ideas
 
 ## Plan for implementing game
