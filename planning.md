@@ -25,6 +25,11 @@ to change the backdrop color.
 
     Variable was not found. I had to import files in order to change color of background to light blue.
 
+3. Change starting pos of the player and dot using a variable for each cord.
+
+    Made variable of static constexpr for x and y of each character.
+    Speed was also changed to a lower amount 
+
 ## Brainstorming game ideas
 
 ## Plan for implementing game
