@@ -17,7 +17,7 @@
 #include "common_fixed_8x16_font.h"
 
 // Pixels / Frame player moves at
-static constexpr bn::fixed SPEED = 8;
+static constexpr bn::fixed SPEED = 5;
 
 // Width and height of the the player and treasure bounding boxes
 static constexpr bn::size PLAYER_SIZE = {8, 8};
@@ -55,6 +55,8 @@ int main()
     bn::sprite_text_generator text_generator(common::fixed_8x16_sprite_font);
 
     int score = 0;
+    int limit = 3;
+    int boostedspeed = 8;
 
     bn::sprite_ptr player = bn::sprite_items::square.create_sprite(player_start_x, player_start_y);
     bn::sprite_ptr treasure = bn::sprite_items::dot.create_sprite(treasure_start_x, treasure_start_y);
@@ -104,6 +106,11 @@ int main()
             treasure.set_y(treasure_start_y);
 
             score = 0;
+        }
+
+        if(bn::keypad::a_press() && limit != 0) {
+            limit--;
+            
         }
 
         // The bounding boxes of the player and treasure, snapped to integer pixels
