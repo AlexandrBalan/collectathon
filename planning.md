@@ -63,3 +63,6 @@ touches the player the game automatically restarts back to 0.
 ## Plan for implementing game
 
 2. for the player rotation, the plan is to make a new int variable for the rotation, and within the while loop make another if statement that selects the keybind and it has another if statement that if rotation is less than 360 or equal to it, it resets to 0.
+
+
+1. i will initiate a string variable for the boost in use, and then i will implement a if statement using the speedbooston boolean. If the speed boost is in use i will add a text on the top of the screen indicating that the user is currently using the speed boost.
