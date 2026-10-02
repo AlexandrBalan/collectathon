@@ -153,7 +153,7 @@ int main()
 
         boost_sprites.clear();
 
-        text_generator.generate(0, SCORE_Y,
+        text_generator.generate(-30, SCORE_Y,
                                 boosting,
                                 boost_sprites);
 
