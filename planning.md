@@ -66,3 +66,5 @@ touches the player the game automatically restarts back to 0.
 
 
 1. i will initiate a string variable for the boost in use, and then i will implement a if statement using the speedbooston boolean. If the speed boost is in use i will add a text on the top of the screen indicating that the user is currently using the speed boost.
+
+7. Try to see how to get a random number every time the user gets a point. Found in doc that there is a random class and teacher already made a variable from it. Use it to get a random num every time player gets point.

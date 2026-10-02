@@ -10,6 +10,7 @@
 #include <bn_string.h>
 #include <bn_color.h>
 #include <bn_backdrop.h>
+#include <bn_random.h>
 
 #include "bn_sprite_items_dot.h"
 #include "bn_sprite_items_square.h"
@@ -197,6 +198,8 @@ int main()
             int new_x = rng.get_int(MIN_X, MAX_X);
             int new_y = rng.get_int(MIN_Y, MAX_Y);
             treasure.set_position(new_x, new_y);
+
+            bn::backdrop::set_color(bn::color(rng.get_int() % 31, rng.get_int() % 31, rng.get_int() % 31));
 
             score++;
         }
