@@ -51,6 +51,13 @@ Whenever the movement keybinds are pressed, the character can spin around while 
 We can add a red square indicated as a enemy, and it can follow the player around. If the enemy
 touches the player the game automatically restarts back to 0.
 
+Add a timer for the player when the game starts and every time the player gets the treasure, add 5 seconds to the timer.
+
+Add a sprite (human) to indicate the player and use the square for 5 points and circle for one points. Make the square come out randomly
+
+Try to add sound when the player gets the circle, square, lose and when they are in the speed boost.
+
+After getting a point, change the background color randomly.
 
 
 ## Plan for implementing game
