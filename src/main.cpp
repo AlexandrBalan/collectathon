@@ -52,6 +52,7 @@ int main()
 
     // Will hold the sprites for the score
     bn::vector<bn::sprite_ptr, MAX_SCORE_CHARS> score_sprites = {};
+    bn::vector<bn::sprite_ptr, 16> boost_sprites = {};
     bn::sprite_text_generator text_generator(common::fixed_8x16_sprite_font);
 
     int score = 0;
@@ -63,6 +64,7 @@ int main()
 
     bn::sprite_ptr player = bn::sprite_items::square.create_sprite(player_start_x, player_start_y);
     bn::sprite_ptr treasure = bn::sprite_items::dot.create_sprite(treasure_start_x, treasure_start_y);
+    bn::string<16> boosting = "";
 
     int rotation = 0;
 
@@ -102,6 +104,7 @@ int main()
             player.set_rotation_angle(rotation);
         }
 
+
         if (player.x() > MAX_X)
         {
             player.set_x(MIN_X);
@@ -137,6 +140,22 @@ int main()
             timer = 0;
             speedBoostOn = false;
         }
+
+
+        //add the boosting text so it displays on top of the screen when toggled
+        if(speedBoostOn) {
+            boosting = "boost in use";
+        }
+
+        else {
+            boosting = "";
+        }
+
+        boost_sprites.clear();
+
+        text_generator.generate(0, SCORE_Y,
+                                boosting,
+                                boost_sprites);
 
         // If the speed boost is on, we decrement the timer variable by 0.5 and keeping the players current speed at the boosted speed
         if (speedBoostOn)
