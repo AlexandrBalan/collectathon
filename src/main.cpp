@@ -56,10 +56,10 @@ int main()
     bn::vector<bn::sprite_ptr, 16> boost_sprites = {};
     bn::sprite_text_generator text_generator(common::fixed_8x16_sprite_font);
 
+    // Variables for speed boost mode
     int score = 0;
     int speedBoostTurns = 3;
     int playersCurrentSpeed = (int)SPEED;
-
     float timer = 0;
     bool speedBoostOn = false;
 
@@ -136,20 +136,11 @@ int main()
 
             score = 0;
 
+            // Change users speed back to normal, put speed boost turns back to 3, reset timer and turn off speed boost mode
             playersCurrentSpeed = (int)SPEED;
             speedBoostTurns = 3;
             timer = 0;
             speedBoostOn = false;
-        }
-
-
-        //add the boosting text so it displays on top of the screen when toggled
-        if(speedBoostOn) {
-            boosting = "boost in use";
-        }
-
-        else {
-            boosting = "";
         }
 
         boost_sprites.clear();
@@ -163,6 +154,9 @@ int main()
         {
             timer -= .5;
             playersCurrentSpeed = (int)BOOSTEDSPEED;
+
+            //add the boosting text so it displays on top of the screen when toggled
+            boosting = "boost in use";
         }
 
         // If the timer is up, we turn off speed boost and revert the players speed back to it's normal speed
@@ -170,6 +164,7 @@ int main()
         {
             speedBoostOn = false;
             playersCurrentSpeed = (int)SPEED;
+            boosting = "";
         }
 
         // If the player pressed the a button, the speedBoostTurns is not 0 and speed boost mode is not on,
