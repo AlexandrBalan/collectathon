@@ -44,5 +44,14 @@ keybind it would get subtracted by one.
 
 ## Brainstorming game ideas
 
+We can add text to the top of the screen indicating that the speed boost is currently in use.
+
+Whenever the movement keybinds are pressed, the character can spin around while the user is playing
+
+We can add a red square indicated as a enemy, and it can follow the player around. If the enemy
+touches the player the game automatically restarts back to 0.
+
+
+
 ## Plan for implementing game
 
