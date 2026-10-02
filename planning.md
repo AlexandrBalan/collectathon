@@ -75,3 +75,5 @@ touches the player the game automatically restarts back to 0.
 i will make the sprite spin faster when the boost is in use as an improvement.
 
 I will make the speed boost button to held instead of pressed, that way you can easily toggle it off when needed.
+
+Added some comments to the code. Needed to remove duplicate if statement
