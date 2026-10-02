@@ -40,6 +40,8 @@ x position and the y position, along with the treasure and the score!
 is increased by a lot, and create a int variable that starts at 3 and whenever they click the 
 keybind it would get subtracted by one.
 
+7. We need a variable that represents the speed boost duriation (float) and a variable to keep how much turns of the speed boost (int) the user has. Also need a variable that represents the actual speed boost (int) and a variable (int) that can change between the normal and boosted speed of the player. Also need a variable to represent the player being in the speed boost mode (bool). We can do if the user pressed the a button, we have turns and if the speed boost mode is not active, turn it on with the timer started and a speed boost taken away. We need another if statement stating if the speed boost mode is active, decrement the timer variable by a certain value with the players speed at that boosted speed. Also need an if statement for if the timer reaches 0, turn the speed back to normal and the speed boost mode off.
+
 ## Brainstorming game ideas
 
 ## Plan for implementing game

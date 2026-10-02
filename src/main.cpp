@@ -17,7 +17,8 @@
 #include "common_fixed_8x16_font.h"
 
 // Pixels / Frame player moves at
-static constexpr bn::fixed SPEED = 5;
+static constexpr bn::fixed SPEED = 2;
+static constexpr bn::fixed BOOSTEDSPEED = 6;
 
 // Width and height of the the player and treasure bounding boxes
 static constexpr bn::size PLAYER_SIZE = {8, 8};
@@ -55,31 +56,35 @@ int main()
     bn::sprite_text_generator text_generator(common::fixed_8x16_sprite_font);
 
     int score = 0;
-    int limit = 3;
-    int boostedspeed = 8;
+    int speedBoostTurns = 3;
+    int playersCurrentSpeed = (int) SPEED;
+
+    float timer = 0;
+    bool speedBoostOn = false;
+
 
     bn::sprite_ptr player = bn::sprite_items::square.create_sprite(player_start_x, player_start_y);
     bn::sprite_ptr treasure = bn::sprite_items::dot.create_sprite(treasure_start_x, treasure_start_y);
 
     while (true)
-    {
+    {   
         // Move player with d-pad
         if (bn::keypad::left_held())
         {
-            player.set_x(player.x() - SPEED);
+            player.set_x(player.x() - playersCurrentSpeed);
         }
 
         if (bn::keypad::right_held())
         {
-            player.set_x(player.x() + SPEED);
+            player.set_x(player.x() + playersCurrentSpeed);
         }
         if (bn::keypad::up_held())
         {
-            player.set_y(player.y() - SPEED);
+            player.set_y(player.y() - playersCurrentSpeed);
         }
         if (bn::keypad::down_held())
         {
-            player.set_y(player.y() + SPEED);
+            player.set_y(player.y() + playersCurrentSpeed);
         }
 
         if (player.x() > MAX_X) {
@@ -105,12 +110,33 @@ int main()
             treasure.set_x(treasure_start_x);
             treasure.set_y(treasure_start_y);
 
+            
             score = 0;
+            
+            playersCurrentSpeed = (int) SPEED;
+            speedBoostTurns = 3;
+            timer = 0;
+            speedBoostOn = false;
         }
 
-        if(bn::keypad::a_press() && limit != 0) {
-            limit--;
-            
+        // If the speed boost is on, we decrement the timer variable by 0.5 and keeping the players current speed at the boosted speed
+        if (speedBoostOn) {
+            timer -= .5;
+            playersCurrentSpeed = (int) BOOSTEDSPEED;
+        }
+
+        // If the timer is up, we turn off speed boost and revert the players speed back to it's normal speed
+        if (timer <= 0) {
+            speedBoostOn = false;
+            playersCurrentSpeed = (int) SPEED;
+        }
+
+        // If the player pressed the a button, the speedBoostTurns is not 0 and speed boost mode is not on,
+        // Turn on the speed boost mode, start the timer and decrement the about of speed boost turns
+        if(bn::keypad::a_pressed() && speedBoostTurns > 0 && !speedBoostOn) {
+            speedBoostOn = true;
+            timer = 60;
+            speedBoostTurns--;
         }
 
         // The bounding boxes of the player and treasure, snapped to integer pixels
