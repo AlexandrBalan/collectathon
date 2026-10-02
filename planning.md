@@ -44,21 +44,22 @@ keybind it would get subtracted by one.
 
 ## Brainstorming game ideas
 
-We can add text to the top of the screen indicating that the speed boost is currently in use.
+1. We can add text to the top of the screen indicating that the speed boost is currently in use.
 
-Whenever the movement keybinds are pressed, the character can spin around while the user is playing
+2. Whenever the movement keybinds are pressed, the character can spin around while the user is playing
 
-We can add a red square indicated as a enemy, and it can follow the player around. If the enemy
+3. We can add a red square indicated as a enemy, and it can follow the player around. If the enemy
 touches the player the game automatically restarts back to 0.
 
-Add a timer for the player when the game starts and every time the player gets the treasure, add 5 seconds to the timer.
+4. Add a timer for the player when the game starts and every time the player gets the treasure, add 5 seconds to the timer.
 
-Add a sprite (human) to indicate the player and use the square for 5 points and circle for one points. Make the square come out randomly
+5. Add a sprite (human) to indicate the player and use the square for 5 points and circle for one points. Make the square come out randomly
 
-Try to add sound when the player gets the circle, square, lose and when they are in the speed boost.
+6. Try to add sound when the player gets the circle, square, lose and when they are in the speed boost.
 
-After getting a point, change the background color randomly.
+7. After getting a point, change the background color randomly.
 
 
 ## Plan for implementing game
 
+2. for the player rotation, the plan is to make a new int variable for the rotation, and within the while loop make another if statement that selects the keybind and it has another if statement that if rotation is less than 360 or equal to it, it resets to 0.
