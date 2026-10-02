@@ -68,6 +68,7 @@ int main()
     bn::string<16> boosting = "";
 
     int rotation = 0;
+    int rotationSpeed = 0;
 
     while (true)
     {
@@ -91,11 +92,20 @@ int main()
         }
 
 
+        //added a new improvement so when you enable speed 
+        //boost the sprite will spin even faster
+        if(speedBoostOn) {
+            rotationSpeed = 20;
+        }
+        else {
+            rotationSpeed = 8;
+        }
+
         //added a rotation for the player, whenever movement is pressed, the player spins.
         if (bn::keypad::left_held() || bn::keypad::right_held() ||
             bn::keypad::up_held() || bn::keypad::down_held())
         {
-            rotation = rotation + 8;
+            rotation = rotation + rotationSpeed;
 
             if(rotation >= 360) {
                 rotation = 0;
