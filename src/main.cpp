@@ -11,7 +11,6 @@
 #include <bn_color.h>
 #include <bn_backdrop.h>
 
-
 #include "bn_sprite_items_dot.h"
 #include "bn_sprite_items_square.h"
 #include "common_fixed_8x16_font.h"
@@ -57,17 +56,18 @@ int main()
 
     int score = 0;
     int speedBoostTurns = 3;
-    int playersCurrentSpeed = (int) SPEED;
+    int playersCurrentSpeed = (int)SPEED;
 
     float timer = 0;
     bool speedBoostOn = false;
 
-
     bn::sprite_ptr player = bn::sprite_items::square.create_sprite(player_start_x, player_start_y);
     bn::sprite_ptr treasure = bn::sprite_items::dot.create_sprite(treasure_start_x, treasure_start_y);
 
+    int rotation = 0;
+
     while (true)
-    {   
+    {
         // Move player with d-pad
         if (bn::keypad::left_held())
         {
@@ -87,53 +87,75 @@ int main()
             player.set_y(player.y() + playersCurrentSpeed);
         }
 
-        if (player.x() > MAX_X) {
+
+        //added a rotation for the player, whenever movement is pressed, the player spins.
+        if (bn::keypad::left_held() || bn::keypad::right_held() ||
+            bn::keypad::up_held() || bn::keypad::down_held())
+        {
+            rotation = rotation + 8;
+
+            if(rotation >= 360) {
+                rotation = 0;
+            }
+
+
+            player.set_rotation_angle(rotation);
+        }
+
+        if (player.x() > MAX_X)
+        {
             player.set_x(MIN_X);
         }
 
-        if (player.x() < MIN_X) {
+        if (player.x() < MIN_X)
+        {
             player.set_x(MAX_X);
         }
 
-        if (player.y() > MAX_Y) {
+        if (player.y() > MAX_Y)
+        {
             player.set_y(MIN_Y);
         }
 
-        if (player.y() < MIN_Y) {
+        if (player.y() < MIN_Y)
+        {
             player.set_y(MAX_Y);
         }
 
-        if(bn::keypad::start_pressed()) {
+        if (bn::keypad::start_pressed())
+        {
             player.set_x(player_start_x);
             player.set_y(player_start_y);
 
             treasure.set_x(treasure_start_x);
             treasure.set_y(treasure_start_y);
 
-            
             score = 0;
-            
-            playersCurrentSpeed = (int) SPEED;
+
+            playersCurrentSpeed = (int)SPEED;
             speedBoostTurns = 3;
             timer = 0;
             speedBoostOn = false;
         }
 
         // If the speed boost is on, we decrement the timer variable by 0.5 and keeping the players current speed at the boosted speed
-        if (speedBoostOn) {
+        if (speedBoostOn)
+        {
             timer -= .5;
-            playersCurrentSpeed = (int) BOOSTEDSPEED;
+            playersCurrentSpeed = (int)BOOSTEDSPEED;
         }
 
         // If the timer is up, we turn off speed boost and revert the players speed back to it's normal speed
-        if (timer <= 0) {
+        if (timer <= 0)
+        {
             speedBoostOn = false;
-            playersCurrentSpeed = (int) SPEED;
+            playersCurrentSpeed = (int)SPEED;
         }
 
         // If the player pressed the a button, the speedBoostTurns is not 0 and speed boost mode is not on,
         // Turn on the speed boost mode, start the timer and decrement the about of speed boost turns
-        if(bn::keypad::a_pressed() && speedBoostTurns > 0 && !speedBoostOn) {
+        if (bn::keypad::a_pressed() && speedBoostTurns > 0 && !speedBoostOn)
+        {
             speedBoostOn = true;
             timer = 60;
             speedBoostTurns--;
