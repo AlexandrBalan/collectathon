@@ -23,6 +23,7 @@ static constexpr bn::fixed BOOSTEDSPEED = 6;
 // Width and height of the the player and treasure bounding boxes
 static constexpr bn::size PLAYER_SIZE = {8, 8};
 static constexpr bn::size TREASURE_SIZE = {8, 8};
+static constexpr bn::size ENEMY_SIZE = {8, 8};
 
 // Full bounds of the screen
 static constexpr int MIN_Y = -bn::display::height() / 2;
@@ -35,6 +36,8 @@ static constexpr int player_start_x = -50;
 static constexpr int player_start_y = 50;
 static constexpr int treasure_start_x = 0;
 static constexpr int treasure_start_y = 0;
+static constexpr int enemy_start_x = 50;
+static constexpr int enemy_start_y = -50;
 
 // Number of characters required to show the longest numer possible in an int (-2147483647)
 static constexpr int MAX_SCORE_CHARS = 11;
@@ -64,11 +67,16 @@ int main()
     bool speedBoostOn = false;
 
     bn::sprite_ptr player = bn::sprite_items::square.create_sprite(player_start_x, player_start_y);
+    bn::sprite_ptr enemy = bn::sprite_items::square.create_sprite(enemy_start_x, enemy_start_y);
     bn::sprite_ptr treasure = bn::sprite_items::dot.create_sprite(treasure_start_x, treasure_start_y);
     bn::string<16> boosting = "";
 
+    // Rotation of player
     int rotation = 0;
     int rotationSpeed = 0;
+
+    // Enenmy speed
+    int enemySpeed = 1;
 
     while (true)
     {
@@ -90,7 +98,6 @@ int main()
         {
             player.set_y(player.y() + playersCurrentSpeed);
         }
-
 
         //added a new improvement so when you enable speed 
         //boost the sprite will spin even faster
@@ -115,6 +122,19 @@ int main()
             player.set_rotation_angle(rotation);
         }
 
+        // If the player is to the right, go to the right
+        if (player.x() > enemy.x()) {
+            enemy.set_x(enemy.x() + enemySpeed);
+        } else if (player.x() < enemy.x()){ // Else if the player is the left, go to the left
+            enemy.set_x(enemy.x() - enemySpeed);
+        }
+        // If the enemy is below the player, go up to the player
+        if (player.y() > enemy.y()) {
+            enemy.set_y(enemy.y() + enemySpeed);
+        } else if (player.y() < enemy.y()) { // Else if the player is below the enemy, go down to the player
+            enemy.set_y(enemy.y() - enemySpeed);
+        }
+        
 
         if (player.x() > MAX_X)
         {
@@ -138,11 +158,15 @@ int main()
 
         if (bn::keypad::start_pressed())
         {
+            // Reset all entities positions
             player.set_x(player_start_x);
             player.set_y(player_start_y);
 
             treasure.set_x(treasure_start_x);
             treasure.set_y(treasure_start_y);
+
+            enemy.set_x(enemy_start_x);
+            enemy.set_y(enemy_start_y);    
 
             score = 0;
 
@@ -151,6 +175,8 @@ int main()
             speedBoostTurns = 3;
             timer = 0;
             speedBoostOn = false;
+
+            bn::backdrop::set_color(bn::color(20, 31, 31));
         }
 
         boost_sprites.clear();
@@ -195,6 +221,10 @@ int main()
                                           treasure.y().round_integer(),
                                           TREASURE_SIZE.width(),
                                           TREASURE_SIZE.height());
+        bn::rect enemy_rect = bn::rect(enemy.x().round_integer(),
+                                        enemy.y().round_integer(),
+                                        ENEMY_SIZE.width(),
+                                        ENEMY_SIZE.height());
 
         // If the bounding boxes overlap, set the treasure to a new location an increase score
         if (player_rect.intersects(treasure_rect))
@@ -207,6 +237,31 @@ int main()
             bn::backdrop::set_color(bn::color(rng.get_int() % 31, rng.get_int() % 31, rng.get_int() % 31));
 
             score++;
+        }
+
+        // If the enemy touches the player, reset the whole game
+        if (enemy_rect.intersects(player_rect)) {
+            
+            // Set all entites back to position
+            player.set_x(player_start_x);
+            player.set_y(player_start_y);
+
+            treasure.set_x(treasure_start_x);
+            treasure.set_y(treasure_start_y);
+
+            enemy.set_x(enemy_start_x);
+            enemy.set_y(enemy_start_y);    
+
+            score = 0;
+
+            // Change users speed back to normal, put speed boost turns back to 3, reset timer and turn off speed boost mode
+            playersCurrentSpeed = (int)SPEED;
+            speedBoostTurns = 3;
+            timer = 0;
+            speedBoostOn = false;
+
+            // Change background to how it was at the start of game
+            bn::backdrop::set_color(bn::color(20, 31, 31));
         }
 
         // Update score display

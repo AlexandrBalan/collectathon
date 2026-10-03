@@ -70,10 +70,12 @@ touches the player the game automatically restarts back to 0.
 7. Try to see how to get a random number every time the user gets a point. Found in doc that there is a random class and teacher already made a variable from it. Use it to get a random num every time player gets point.
 
 
-
 ## IMPROVEMENTS
 i will make the sprite spin faster when the boost is in use as an improvement.
 
 I will make the speed boost button to held instead of pressed, that way you can easily toggle it off when needed.
 
 Added some comments to the code. Needed to remove duplicate if statement
+
+Added the enemy player as discussed before. Needed to figure out its position relative to the player and make the enemy
+go to the player. Figured it out by checking its x and y pos against the player and see where it was relative to the player and acted accordingly.
