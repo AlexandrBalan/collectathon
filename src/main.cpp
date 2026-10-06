@@ -36,8 +36,8 @@ static constexpr int player_start_x = -50;
 static constexpr int player_start_y = 50;
 static constexpr int treasure_start_x = 0;
 static constexpr int treasure_start_y = 0;
-static constexpr int enemy_start_x = 50;
-static constexpr int enemy_start_y = -50;
+// static constexpr int enemy_start_x = 50;
+// static constexpr int enemy_start_y = -50;
 
 // Number of characters required to show the longest numer possible in an int (-2147483647)
 static constexpr int MAX_SCORE_CHARS = 11;
@@ -67,16 +67,15 @@ int main()
     bool speedBoostOn = false;
 
     bn::sprite_ptr player = bn::sprite_items::square.create_sprite(player_start_x, player_start_y);
-    bn::sprite_ptr enemy = bn::sprite_items::square.create_sprite(enemy_start_x, enemy_start_y);
     bn::sprite_ptr treasure = bn::sprite_items::dot.create_sprite(treasure_start_x, treasure_start_y);
     bn::string<16> boosting = "";
+
+    bn::vector<bn::sprite_ptr, 16> enemyPool = {};
+    bn::vector<bn::fixed, 16> enemySpeed = {};
 
     // Rotation of player
     int rotation = 0;
     int rotationSpeed = 0;
-
-    // Enenmy speed
-    int enemySpeed = 1;
 
     while (true)
     {
@@ -122,20 +121,6 @@ int main()
             player.set_rotation_angle(rotation);
         }
 
-        // If the player is to the right, go to the right
-        if (player.x() > enemy.x()) {
-            enemy.set_x(enemy.x() + enemySpeed);
-        } else if (player.x() < enemy.x()){ // Else if the player is the left, go to the left
-            enemy.set_x(enemy.x() - enemySpeed);
-        }
-        // If the enemy is below the player, go up to the player
-        if (player.y() > enemy.y()) {
-            enemy.set_y(enemy.y() + enemySpeed);
-        } else if (player.y() < enemy.y()) { // Else if the player is below the enemy, go down to the player
-            enemy.set_y(enemy.y() - enemySpeed);
-        }
-        
-
         if (player.x() > MAX_X)
         {
             player.set_x(MIN_X);
@@ -164,9 +149,6 @@ int main()
 
             treasure.set_x(treasure_start_x);
             treasure.set_y(treasure_start_y);
-
-            enemy.set_x(enemy_start_x);
-            enemy.set_y(enemy_start_y);    
 
             score = 0;
 
@@ -221,10 +203,6 @@ int main()
                                           treasure.y().round_integer(),
                                           TREASURE_SIZE.width(),
                                           TREASURE_SIZE.height());
-        bn::rect enemy_rect = bn::rect(enemy.x().round_integer(),
-                                        enemy.y().round_integer(),
-                                        ENEMY_SIZE.width(),
-                                        ENEMY_SIZE.height());
 
         // If the bounding boxes overlap, set the treasure to a new location an increase score
         if (player_rect.intersects(treasure_rect))
@@ -236,32 +214,83 @@ int main()
 
             bn::backdrop::set_color(bn::color(rng.get_int() % 31, rng.get_int() % 31, rng.get_int() % 31));
 
+            // If the list is less than 10, add a new enemy and make their speed to 1
+            if (enemyPool.size() <= 10) {
+                enemyPool.push_back(bn::sprite_items::square.create_sprite((rng.get_int() % 20) + bn::display::width(), (rng.get_int() % 20) + bn::display::height()));
+                enemySpeed.push_back(1);
+            }
+
             score++;
         }
 
-        // If the enemy touches the player, reset the whole game
-        if (enemy_rect.intersects(player_rect)) {
-            
-            // Set all entites back to position
-            player.set_x(player_start_x);
-            player.set_y(player_start_y);
+        // If there is at-least one enemy and one speed for an enemy
+        if (enemyPool.size() != 0 && enemySpeed.size() != 0)
+        {
+                // Loop through the vector
+                for (int i = 0; i < enemyPool.size(); i++) {
 
-            treasure.set_x(treasure_start_x);
-            treasure.set_y(treasure_start_y);
+                    
+                int enemyIndivSpeed = 0;
 
-            enemy.set_x(enemy_start_x);
-            enemy.set_y(enemy_start_y);    
+                // Make a box around enemy
+                bn::rect enemy_rect = bn::rect(enemyPool[i].x().round_integer(),
+                                            enemyPool[i].y().round_integer(),
+                                            ENEMY_SIZE.width(),
+                                            ENEMY_SIZE.height());
 
-            score = 0;
+                // If a enemy touches player, reset the game
+                if (enemy_rect.intersects(player_rect)) {
 
-            // Change users speed back to normal, put speed boost turns back to 3, reset timer and turn off speed boost mode
-            playersCurrentSpeed = (int)SPEED;
-            speedBoostTurns = 3;
-            timer = 0;
-            speedBoostOn = false;
+                    enemyIndivSpeed = 0;
+                    
+                // Set all entites back to position
+                player.set_x(player_start_x);
+                player.set_y(player_start_y);
 
-            // Change background to how it was at the start of game
-            bn::backdrop::set_color(bn::color(20, 31, 31));
+                treasure.set_x(treasure_start_x);
+                treasure.set_y(treasure_start_y);
+                
+                // Reset each list
+                enemyPool.clear();
+                enemySpeed.clear();
+
+                score = 0;
+
+                // Change users speed back to normal, put speed boost turns back to 3, reset timer and turn off speed boost mode
+                playersCurrentSpeed = (int)SPEED;
+                speedBoostTurns = 3;
+                timer = 0;
+                speedBoostOn = false;
+
+                // Change background to how it was at the start of game
+                bn::backdrop::set_color(bn::color(20, 31, 31));
+
+                
+
+                }
+                else {
+                
+                
+                if (enemySpeed.size() != 0) {
+                     // If the player is to the right, go to the right
+                if (player.x() > enemyPool[i].x()) {
+                     enemyPool[i].set_x( enemyPool[i].x() + enemySpeed.at(enemyIndivSpeed));
+                } else if (player.x() <  enemyPool[i].x()){ // Else if the player is the left, go to the left
+                     enemyPool[i].set_x( enemyPool[i].x() - enemySpeed.at(enemyIndivSpeed));
+                }
+                // If the enemy is below the player, go up to the player
+                if (player.y() >  enemyPool[i].y()) {
+                     enemyPool[i].set_y( enemyPool[i].y() + enemySpeed.at(enemyIndivSpeed));
+                } else if (player.y() <  enemyPool[i].y()) { // Else if the player is below the enemy, go down to the player
+                     enemyPool[i].set_y( enemyPool[i].y() - enemySpeed.at(enemyIndivSpeed));
+                }
+                }
+               
+
+                enemyIndivSpeed++;
+
+                }
+            }
         }
 
         // Update score display
