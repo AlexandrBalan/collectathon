@@ -70,6 +70,37 @@ touches the player the game automatically restarts back to 0.
 7. Try to see how to get a random number every time the user gets a point. Found in doc that there is a random class and teacher already made a variable from it. Use it to get a random num every time player gets point.
 
 
+
+
+
+
+## 10/6/26
+
+Change the enemies to actual sprites. - Alex
+
+Change the main user to an actual sprite - Alex
+
+Add background music - Ali
+
+Make the background colors easily visible on the GMA device - Alex
+
+Make a weapon (Do this last) - (RAY GUN)
+
+Enemies will have health bars - Ali
+
+Make the enemies not turn into squares and combine (BUG) - Alex
+
+Add a nuke point that kills all the enemies when it's collected - Ali / Alex
+
+
+
+
+
+
+
+
+
+
 ## IMPROVEMENTS
 i will make the sprite spin faster when the boost is in use as an improvement.
 
