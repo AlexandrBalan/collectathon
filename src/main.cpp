@@ -11,6 +11,7 @@
 #include <bn_color.h>
 #include <bn_backdrop.h>
 #include <bn_random.h>
+#include <bn_sound_items.h>
 
 #include "bn_sprite_items_dot.h"
 #include "bn_sprite_items_square.h"
@@ -53,6 +54,8 @@ int main()
     bn::random rng = bn::random();
 
     bn::backdrop::set_color(bn::color(20, 31, 31));
+
+    bn::sound_items::roundstart.play();
 
     // Will hold the sprites for the score
     bn::vector<bn::sprite_ptr, MAX_SCORE_CHARS> score_sprites = {};
