@@ -92,16 +92,16 @@ int main()
     int rotation = 0;
     int rotationSpeed = 0;
 
-    int a = 200;
+    float timeDelay = 200;
+    float timeMinus = 0;
 
     while (true)
     {
+        timeDelay -= timeMinus;
 
-        a -= 1;
-
-        if (a <= 0) {
+        if (timeDelay <= 0) {
             soundPool.at(rng.get_int() % soundPool.size()).play();
-            a = 200;
+            timeDelay = 200;
         }
 
         // Move player with d-pad
@@ -245,6 +245,14 @@ int main()
             // If the list is less than 10, add a new enemy and make their speed to 1
             if (enemyPool.size() <= 10)
             {
+                    // We added our first zombie
+                    if (enemyPool.size() < 1) {
+                        soundPool.at(rng.get_int() % soundPool.size()).play();
+                        timeDelay = 200;
+                    }
+                    
+                    timeMinus += 0.4;
+
                 enemyPool.push_back(bn::sprite_items::square.create_sprite((rng.get_int() % 20) + bn::display::width(), (rng.get_int() % 20) + bn::display::height()));
                 enemySpeed.push_back(1);
             }
@@ -285,6 +293,9 @@ int main()
                     enemySpeed.clear();
 
                     score = 0;
+
+                    timeDelay = 200;
+                    timeMinus = 0;
 
                     // Change users speed back to normal, put speed boost turns back to 3, reset timer and turn off speed boost mode
                     playersCurrentSpeed = (int)SPEED;
