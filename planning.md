@@ -88,7 +88,6 @@ Make a weapon (Do this last) - (RAY GUN)
 
 Enemies will have health bars - Ali
 
-Make the enemies not turn into squares and combine (BUG) - Alex
 
 Add a nuke point that kills all the enemies when it's collected - Ali / Alex
 
