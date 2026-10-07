@@ -214,6 +214,7 @@ int main()
             int new_y = rng.get_int(MIN_Y, MAX_Y);
             treasure.set_position(new_x, new_y);
 
+            //the background color that is randomly being set whenever a point is being taken
             bn::backdrop::set_color(bn::color(rng.get_int() % 31, rng.get_int() % 31, rng.get_int() % 31));
 
             // If the list is less than 10, add a new enemy and make their speed to 1
