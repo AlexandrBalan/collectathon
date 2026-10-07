@@ -47,6 +47,8 @@ static constexpr int MAX_SCORE_CHARS = 11;
 static constexpr int SCORE_X = 70;
 static constexpr int SCORE_Y = -70;
 
+
+
 int main()
 {
     bn::core::init();
@@ -56,6 +58,15 @@ int main()
     bn::backdrop::set_color(bn::color(20, 31, 31));
 
     bn::sound_items::roundstart.play();
+
+    bn::vector<bn::sound_item, 10> soundPool;
+    soundPool.push_back(bn::sound_items::zombiescream1);
+    soundPool.push_back(bn::sound_items::zombiescream2);
+    soundPool.push_back(bn::sound_items::zombiescream3);
+    soundPool.push_back(bn::sound_items::zombiescream4);
+    soundPool.push_back(bn::sound_items::zombiescream5);
+    soundPool.push_back(bn::sound_items::zombiescream6);
+    soundPool.push_back(bn::sound_items::zombiescream7);
 
     // Will hold the sprites for the score
     bn::vector<bn::sprite_ptr, MAX_SCORE_CHARS> score_sprites = {};
@@ -80,8 +91,18 @@ int main()
     int rotation = 0;
     int rotationSpeed = 0;
 
+    int a = 200;
+
     while (true)
     {
+
+        a -= 1;
+
+        if (a <= 0) {
+            soundPool.at(rng.get_int() % soundPool.size()).play();
+            a = 200;
+        }
+
         // Move player with d-pad
         if (bn::keypad::left_held())
         {
