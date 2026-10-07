@@ -11,6 +11,7 @@
 #include <bn_color.h>
 #include <bn_backdrop.h>
 #include <bn_random.h>
+#include <bn_sound_items.h>
 
 #include "bn_sprite_items_dot.h"
 #include "bn_sprite_items_square.h"
@@ -46,18 +47,21 @@ static constexpr int MAX_SCORE_CHARS = 11;
 static constexpr int SCORE_X = 70;
 static constexpr int SCORE_Y = -70;
 
+    // Will hold the sprites for the score
+static bn::vector<bn::sprite_ptr, MAX_SCORE_CHARS> score_sprites = {};
+static bn::vector<bn::sprite_ptr, 16> boost_sprites = {};
+static bn::sprite_text_generator text_generator(common::fixed_8x16_sprite_font);
+
 int main()
 {
     bn::core::init();
+
+    bn::sound_items::roundstart.play();
 
     bn::random rng = bn::random();
 
     bn::backdrop::set_color(bn::color(20, 31, 31));
 
-    // Will hold the sprites for the score
-    bn::vector<bn::sprite_ptr, MAX_SCORE_CHARS> score_sprites = {};
-    bn::vector<bn::sprite_ptr, 16> boost_sprites = {};
-    bn::sprite_text_generator text_generator(common::fixed_8x16_sprite_font);
 
     // Variables for speed boost mode
     int score = 0;
