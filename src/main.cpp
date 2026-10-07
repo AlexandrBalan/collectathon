@@ -12,6 +12,7 @@
 #include <bn_backdrop.h>
 #include <bn_random.h>
 #include <bn_sound_items.h>
+#include "bn_sprite_items_enemy.h"
 
 #include "bn_sprite_items_dot.h"
 #include "bn_sprite_items_square.h"
@@ -238,8 +239,8 @@ int main()
             int new_y = rng.get_int(MIN_Y, MAX_Y);
             treasure.set_position(new_x, new_y);
 
-            //the background color that is randomly being set whenever a point is being taken
-            bn::backdrop::set_color(bn::color(rng.get_int() % 31, rng.get_int() % 31, rng.get_int() % 31));
+            // the background color that is randomly being set whenever a point is being taken
+            bn::backdrop::set_color(bn::color(rng.get_int(15, 31), rng.get_int(15, 31), rng.get_int(15, 31)));
 
             // If the list is less than 10, add a new enemy and make their speed to 1
             if (enemyPool.size() <= 10)
@@ -299,7 +300,7 @@ int main()
                     // How fast this enemy moves
                     bn::fixed speed = enemySpeed.at(0);
 
-                    //start with the enemy's current spot
+                    // start with the enemy's current spot
                     bn::fixed next_x = enemyPool[i].x();
                     bn::fixed next_y = enemyPool[i].y();
 
