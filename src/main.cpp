@@ -215,7 +215,7 @@ int main()
             treasure.set_position(new_x, new_y);
 
             //the background color that is randomly being set whenever a point is being taken
-            bn::backdrop::set_color(bn::color(rng.get_int() % 31, rng.get_int() % 31, rng.get_int() % 31));
+            bn::backdrop::set_color(bn::color(rng.get_int(15,31), rng.get_int(15,31), rng.get_int(15,31)));
 
             // If the list is less than 10, add a new enemy and make their speed to 1
             if (enemyPool.size() <= 10)
