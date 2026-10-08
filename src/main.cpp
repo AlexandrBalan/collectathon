@@ -19,6 +19,8 @@
 #include "bn_sprite_items_square.h"
 #include "common_fixed_8x16_font.h"
 
+
+
 // Pixels / Frame player moves at
 static constexpr bn::fixed SPEED = 2;
 static constexpr bn::fixed BOOSTEDSPEED = 6;
@@ -48,20 +50,22 @@ static constexpr int MAX_SCORE_CHARS = 11;
 // Score location
 static constexpr int SCORE_X = 70;
 static constexpr int SCORE_Y = -70;
-
+static bn::vector<bn::sound_item, 10> soundPool;
+// static constexpr bn::music_item audio = bn::music_items::gameov;
 
 
 int main()
 {
+    bn::fixed soundAudio = 0.65;
+
     bn::core::init();
 
     bn::random rng = bn::random();
 
     bn::backdrop::set_color(bn::color(20, 31, 31));
 
-    bn::sound_items::roundstart.play(0.2);
-
-    bn::vector<bn::sound_item, 10> soundPool;
+    bn::sound_items::roundstart.play(soundAudio);
+    
     soundPool.push_back(bn::sound_items::zombiescream1);
     soundPool.push_back(bn::sound_items::zombiescream2);
     soundPool.push_back(bn::sound_items::zombiescream3);
@@ -96,6 +100,7 @@ int main()
     float timeDelay = 200;
     float timeMinus = 0;
 
+
     
 
     while (true)
@@ -103,7 +108,7 @@ int main()
         timeDelay -= timeMinus;
 
         if (timeDelay <= 0) {
-            soundPool.at(rng.get_int() % soundPool.size()).play(0.2);
+            soundPool.at(rng.get_int() % soundPool.size()).play(soundAudio);
             timeDelay = 200;
         }
 
@@ -252,14 +257,13 @@ int main()
             {
                     // We added our first zombie
                     if (enemyPool.size() < 1) {
-                        soundPool.at(rng.get_int() % soundPool.size()).play(0.2);
-                        timeDelay = 200;
+                        soundPool.at(rng.get_int() % soundPool.size()).play(soundAudio);    
                     }
                     
                     timeMinus += 0.35;
 
                 enemyPool.push_back(bn::sprite_items::enemy.create_sprite((rng.get_int() % 20) + bn::display::width(), (rng.get_int() % 20) + bn::display::height()));
-                enemySpeed.push_back(1);
+                enemySpeed.push_back(.5);
             }
 
             score++;
@@ -285,7 +289,7 @@ int main()
                 {
 
                     bn::sound::stop_all();
-                    bn::sound_items::roundstart.play();
+                    bn::sound_items::roundstart.play(soundAudio);
 
                     enemyIndivSpeed = 0;
 
