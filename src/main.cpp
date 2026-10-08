@@ -14,6 +14,7 @@
 #include <bn_sound_items.h>
 #include <bn_sound.h>
 #include "bn_sprite_items_zombie.h"
+#include "bn_sprite_items_skull.h"
 
 #include "bn_sprite_items_dot.h"
 #include "bn_sprite_items_knight.h"
@@ -87,7 +88,7 @@ int main()
     bool speedBoostOn = false;
 
     bn::sprite_ptr player = bn::sprite_items::knight.create_sprite(player_start_x, player_start_y);
-    bn::sprite_ptr treasure = bn::sprite_items::dot.create_sprite(treasure_start_x, treasure_start_y);
+    bn::sprite_ptr treasure = bn::sprite_items::skull.create_sprite(treasure_start_x, treasure_start_y);
     
     bn::string<16> boosting = "";
 
