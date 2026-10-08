@@ -256,7 +256,7 @@ int main()
                         timeDelay = 200;
                     }
                     
-                    timeMinus += 0.3;
+                    timeMinus += 0.35;
 
                 enemyPool.push_back(bn::sprite_items::enemy.create_sprite((rng.get_int() % 20) + bn::display::width(), (rng.get_int() % 20) + bn::display::height()));
                 enemySpeed.push_back(1);
