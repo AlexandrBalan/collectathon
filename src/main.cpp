@@ -13,7 +13,7 @@
 #include <bn_random.h>
 #include <bn_sound_items.h>
 #include <bn_sound.h>
-#include "bn_sprite_items_enemy.h"
+#include "bn_sprite_items_zombie.h"
 
 #include "bn_sprite_items_dot.h"
 #include "bn_sprite_items_knight.h"
@@ -28,7 +28,7 @@ static constexpr bn::fixed BOOSTEDSPEED = 6;
 // Width and height of the the player and treasure bounding boxes
 static constexpr bn::size PLAYER_SIZE = {8, 8};
 static constexpr bn::size TREASURE_SIZE = {8, 8};
-static constexpr bn::size ENEMY_SIZE = {32, 32};
+static constexpr bn::size ENEMY_SIZE = {16,16};
 
 // Full bounds of the screen
 static constexpr int MIN_Y = -bn::display::height() / 2;
@@ -263,7 +263,7 @@ int main()
                     
                     timeMinus += 0.35;
 
-                enemyPool.push_back(bn::sprite_items::enemy.create_sprite((rng.get_int() % 20) + bn::display::width(), (rng.get_int() % 20) + bn::display::height()));
+                enemyPool.push_back(bn::sprite_items:: zombie.create_sprite((rng.get_int() % 20) + bn::display::width(), (rng.get_int() % 20) + bn::display::height()));
                 enemySpeed.push_back(.5);
             }
 
