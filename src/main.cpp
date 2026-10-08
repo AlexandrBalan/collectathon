@@ -12,6 +12,7 @@
 #include <bn_backdrop.h>
 #include <bn_random.h>
 #include <bn_sound_items.h>
+#include <bn_sound.h>
 #include "bn_sprite_items_enemy.h"
 
 #include "bn_sprite_items_dot.h"
@@ -58,7 +59,7 @@ int main()
 
     bn::backdrop::set_color(bn::color(20, 31, 31));
 
-    bn::sound_items::roundstart.play();
+    bn::sound_items::roundstart.play(0.2);
 
     bn::vector<bn::sound_item, 10> soundPool;
     soundPool.push_back(bn::sound_items::zombiescream1);
@@ -95,12 +96,14 @@ int main()
     float timeDelay = 200;
     float timeMinus = 0;
 
+    
+
     while (true)
     {
         timeDelay -= timeMinus;
 
         if (timeDelay <= 0) {
-            soundPool.at(rng.get_int() % soundPool.size()).play();
+            soundPool.at(rng.get_int() % soundPool.size()).play(0.2);
             timeDelay = 200;
         }
 
@@ -234,6 +237,8 @@ int main()
         // If the bounding boxes overlap, set the treasure to a new location an increase score
         if (player_rect.intersects(treasure_rect))
         {
+            
+
             // Jump to any random point in the screen
             int new_x = rng.get_int(MIN_X, MAX_X);
             int new_y = rng.get_int(MIN_Y, MAX_Y);
@@ -247,11 +252,11 @@ int main()
             {
                     // We added our first zombie
                     if (enemyPool.size() < 1) {
-                        soundPool.at(rng.get_int() % soundPool.size()).play();
+                        soundPool.at(rng.get_int() % soundPool.size()).play(0.2);
                         timeDelay = 200;
                     }
                     
-                    timeMinus += 0.4;
+                    timeMinus += 0.3;
 
                 enemyPool.push_back(bn::sprite_items::square.create_sprite((rng.get_int() % 20) + bn::display::width(), (rng.get_int() % 20) + bn::display::height()));
                 enemySpeed.push_back(1);
@@ -278,6 +283,9 @@ int main()
                 // If a enemy touches player, reset the game
                 if (enemy_rect.intersects(player_rect))
                 {
+
+                    bn::sound::stop_all();
+                    bn::sound_items::roundstart.play();
 
                     enemyIndivSpeed = 0;
 
