@@ -16,7 +16,7 @@
 #include "bn_sprite_items_enemy.h"
 
 #include "bn_sprite_items_dot.h"
-#include "bn_sprite_items_square.h"
+#include "bn_sprite_items_knight.h"
 #include "common_fixed_8x16_font.h"
 
 
@@ -86,8 +86,9 @@ int main()
     float timer = 0;
     bool speedBoostOn = false;
 
-    bn::sprite_ptr player = bn::sprite_items::square.create_sprite(player_start_x, player_start_y);
+    bn::sprite_ptr player = bn::sprite_items::knight.create_sprite(player_start_x, player_start_y);
     bn::sprite_ptr treasure = bn::sprite_items::dot.create_sprite(treasure_start_x, treasure_start_y);
+    
     bn::string<16> boosting = "";
 
     bn::vector<bn::sprite_ptr, 16> enemyPool = {};
