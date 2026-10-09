@@ -18,6 +18,7 @@
 #include "bn_sprite_items_dot.h"
 #include "bn_sprite_items_square.h"
 #include "common_fixed_8x16_font.h"
+#include "bn_music.h"
 
 
 
@@ -65,7 +66,7 @@ int main()
     bn::backdrop::set_color(bn::color(20, 31, 31));
 
     bn::sound_items::roundstart.play(soundAudio);
-    
+
     soundPool.push_back(bn::sound_items::zombiescream1);
     soundPool.push_back(bn::sound_items::zombiescream2);
     soundPool.push_back(bn::sound_items::zombiescream3);
@@ -100,14 +101,32 @@ int main()
     float timeDelay = 200;
     float timeMinus = 0;
 
+    bn::sprite_text_generator gameEndedTextGenerator(common::fixed_8x16_sprite_font);
+    bn::vector<bn::sprite_ptr, 32> textEndedV;
 
+
+    bool isPlayerDead = false;
+
+    bool isEndGameSongPlaying = false;
     
 
     while (true)
     {
         timeDelay -= timeMinus;
 
-        if (timeDelay <= 0) {
+        if (isPlayerDead) {
+            bn::string<MAX_SCORE_CHARS> gameEndedText = bn::to_string<MAX_SCORE_CHARS>("GAME OVER");
+            textEndedV.clear();
+            gameEndedTextGenerator.generate(-35, -20, gameEndedText, textEndedV);
+            
+            if (!isEndGameSongPlaying) {
+                bn::sound_items::roundended.play();
+                isEndGameSongPlaying = true;
+            }
+
+            
+        } else {
+            if (timeDelay <= 0) {
             soundPool.at(rng.get_int() % soundPool.size()).play(soundAudio);
             timeDelay = 200;
         }
@@ -288,8 +307,10 @@ int main()
                 if (enemy_rect.intersects(player_rect))
                 {
 
+                    isPlayerDead = true;
+
                     bn::sound::stop_all();
-                    bn::sound_items::roundstart.play(soundAudio);
+                    
 
                     enemyIndivSpeed = 0;
 
@@ -397,6 +418,9 @@ int main()
         // Update RNG seed every frame so we don't get the same sequence of positions every time
         rng.update();
 
+        }
+
+        
         bn::core::update();
     }
 }
