@@ -125,10 +125,38 @@ int main()
     bn::sprite_text_generator a(common::fixed_8x16_sprite_font);
     bn::vector<bn::sprite_ptr, 32> e;
     
-    
+    int pistolAmmo = 8;
+    float reloadingTime = 60;
    
     while (true)
     {
+        if (bn::keypad::a_pressed()) {
+            
+            if (pistolAmmo > 0 && reloadingTime == 60) {
+                bn::sound_items::pistolshooting.play();      
+
+                pistolAmmo -= 1;
+            }
+               
+        }
+
+        if (pistolAmmo == 0) {
+
+            if (reloadingTime == 60) {
+                bn::sound_items::pistolreloading.play();
+            }
+
+            reloadingTime -= 0.6;
+            
+            if (reloadingTime <= 0) {
+                reloadingTime = 60;
+                pistolAmmo = 8;
+            }
+        }
+
+        
+        
+
         timeDelay -= timeMinus;
 
         if (bn::keypad::b_pressed()) {
@@ -163,6 +191,8 @@ int main()
 
                 isPlayerDead = false;
                 isEndGameSongPlaying = false;
+
+                counterToSecretSong = 0;
 
 
                 bn::sound_items::roundstart.play();
