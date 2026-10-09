@@ -15,6 +15,7 @@
 #include <bn_sound.h>
 #include "bn_sprite_items_zombie.h"
 #include "bn_sprite_items_skull.h"
+#include "bn_music_items.h"
 
 #include "bn_sprite_items_dot.h"
 #include "bn_sprite_items_knight.h"
@@ -67,6 +68,7 @@ int main()
     bn::backdrop::set_color(bn::color(20, 31, 31));
 
     bn::sound_items::roundstart.play(soundAudio);
+    
 
     soundPool.push_back(bn::sound_items::zombiescream1);
     soundPool.push_back(bn::sound_items::zombiescream2);
@@ -110,16 +112,28 @@ int main()
     bool isPlayerDead = false;
 
     bool isEndGameSongPlaying = false;
+
+    int counterToSecretSong = 0;
     
 
     while (true)
     {
         timeDelay -= timeMinus;
 
+        if (bn::keypad::b_pressed()) {
+            counterToSecretSong++;
+
+            if (counterToSecretSong == 10) {
+                bn::music_items::easteregg.play();
+            }
+        }
+
         if (isPlayerDead) {
             bn::string<MAX_SCORE_CHARS> gameEndedText = bn::to_string<MAX_SCORE_CHARS>("GAME OVER");
             textEndedV.clear();
             gameEndedTextGenerator.generate(-35, -20, gameEndedText, textEndedV);
+
+            bn::music::stop();
             
             if (!isEndGameSongPlaying) {
                 bn::sound_items::roundended.play();
