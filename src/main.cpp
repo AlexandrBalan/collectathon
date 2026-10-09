@@ -23,11 +23,10 @@
 #include "bn_music.h"
 
 #include "bn_sprite_items_pistol.h"
-
-
+#include "bn_sprite_items_bullet.h"
 
 // Pixels / Frame player moves at
-static constexpr bn::fixed SPEED = 2;
+static constexpr bn::fixed SPEED = 1;
 static constexpr bn::fixed BOOSTEDSPEED = 6;
 
 // Width and height of the the player and treasure bounding boxes
@@ -48,8 +47,6 @@ static constexpr int pistol_start_x = -45;
 static constexpr int pistol_start_y = 50;
 static constexpr int treasure_start_x = 0;
 static constexpr int treasure_start_y = 0;
-// static constexpr int enemy_start_x = 50;
-// static constexpr int enemy_start_y = -50;
 
 // Number of characters required to show the longest numer possible in an int (-2147483647)
 static constexpr int MAX_SCORE_CHARS = 11;
@@ -58,7 +55,6 @@ static constexpr int MAX_SCORE_CHARS = 11;
 static constexpr int SCORE_X = 70;
 static constexpr int SCORE_Y = -70;
 static bn::vector<bn::sound_item, 10> soundPool;
-// static constexpr bn::music_item audio = bn::music_items::gameov;
 
 
 int main()
@@ -101,6 +97,9 @@ int main()
     
     bn::string<16> boosting = "";
 
+    bn::vector<bn::sprite_ptr, 20> bulletPool = {};
+    bn::fixed bulletSpeed = 3;
+
     bn::vector<bn::sprite_ptr, 16> enemyPool = {};
     bn::vector<bn::fixed, 16> enemySpeed = {};
 
@@ -122,43 +121,70 @@ int main()
     int counterToSecretSong = 0;
 
     
-    bn::sprite_text_generator a(common::fixed_8x16_sprite_font);
-    bn::vector<bn::sprite_ptr, 32> e;
+    bn::sprite_text_generator restartGameTextGen(common::fixed_8x16_sprite_font);
+    bn::vector<bn::sprite_ptr, 32> restartGameVec;
     
     int pistolAmmo = 8;
     float reloadingTime = 60;
    
     while (true)
     {
+
+        
         if (bn::keypad::a_pressed()) {
             
+            // If we have ammo and we are not reloading
             if (pistolAmmo > 0 && reloadingTime == 60) {
-                bn::sound_items::pistolshooting.play();      
 
+                // Play the sound
+                bn::sound_items::pistolshooting.play(soundAudio);
+
+                // Make a bullet ptr and scale it down a little bit
+                bn::sprite_ptr bullet = bn::sprite_items::bullet.create_sprite(pistol.x() + 1, pistol.y());
+                bullet.set_scale(0.65);
+                
+                // Put that bullet in the list and decrement the ammo by one
+                bulletPool.push_back(bullet);
                 pistolAmmo -= 1;
+                
             }
                
         }
 
+        // Loop through the list of bullets
+        for (int i = 0; i < bulletPool.size(); i++) {
+
+            // Get the current bullet, increase its speed by the bulletSpeed variable towards positive x
+            bulletPool[i].set_x(bulletPool[i].x() + bulletSpeed);
+
+            // If the bullet is out of bounds, remove it from the list
+            if (bulletPool[i].x() > bn::display::width()) {
+                bulletPool.erase(bulletPool.begin() + i);
+            }
+        }
+
+        // If the ammo on the pistol is empty
         if (pistolAmmo == 0) {
 
+            // Play the reloading speed once
             if (reloadingTime == 60) {
-                bn::sound_items::pistolreloading.play();
+                bn::sound_items::pistolreloading.play(soundAudio);
             }
 
+            // Start the reloading
             reloadingTime -= 0.6;
-            
+
+            // If reloading is done, set the timer back to 60 and pistol ammo to 8
             if (reloadingTime <= 0) {
                 reloadingTime = 60;
                 pistolAmmo = 8;
             }
         }
 
-        
-        
 
         timeDelay -= timeMinus;
 
+        // If the user pressed the b button 10 times, play the secret song
         if (bn::keypad::b_pressed()) {
             counterToSecretSong++;
 
@@ -167,24 +193,29 @@ int main()
             }
         }
 
+        // If the player is dead
         if (isPlayerDead) {
+
+            // Display game over screen
             bn::string<MAX_SCORE_CHARS> gameEndedText = bn::to_string<MAX_SCORE_CHARS>("GAME OVER");
             textEndedV.clear();
             gameEndedTextGenerator.generate(-35, -20, gameEndedText, textEndedV);
 
+            // Display restart screen
+            bn::string<MAX_SCORE_CHARS> restartText = bn::to_string<MAX_SCORE_CHARS>("A - RESTART");
+            restartGameVec.clear();
+            restartGameTextGen.generate(-40, 30, restartText, restartGameVec);
 
-            bn::string<MAX_SCORE_CHARS> b = bn::to_string<MAX_SCORE_CHARS>("A - RESTART");
-            e.clear();
-            a.generate(-40, 30, b, e);
-
-
+            // Stop all music
             bn::music::stop();
             
+            // If the endgame music is not playing, play it
             if (!isEndGameSongPlaying) {
                 bn::sound_items::roundended.play();
                 isEndGameSongPlaying = true;
             }
 
+            // If the a button is pressed, stop all music and restart the game
             if (bn::keypad::a_pressed()) {
                 bn::music::stop();
                 bn::sound::stop_all();
@@ -197,7 +228,7 @@ int main()
 
                 bn::sound_items::roundstart.play();
                 textEndedV.clear();
-                e.clear();
+                restartGameVec.clear();
                 
             
 
@@ -231,7 +262,7 @@ int main()
             }
 
             
-        } else {
+        } else { // Else, game is running
             if (timeDelay <= 0) {
             soundPool.at(rng.get_int() % soundPool.size()).play(soundAudio);
             timeDelay = 200;
@@ -351,12 +382,12 @@ int main()
 
         // If the player pressed the a button, the speedBoostTurns is not 0 and speed boost mode is not on,
         // Turn on the speed boost mode, start the timer and decrement the about of speed boost turns
-        if (bn::keypad::a_pressed() && speedBoostTurns > 0 && !speedBoostOn)
-        {
-            speedBoostOn = true;
-            timer = 60;
-            speedBoostTurns--;
-        }
+        // if (bn::keypad::a_pressed() && speedBoostTurns > 0 && !speedBoostOn)
+        // {
+        //     speedBoostOn = true;
+        //     timer = 60;
+        //     speedBoostTurns--;
+        // }
 
         // The bounding boxes of the player and treasure, snapped to integer pixels
         bn::rect player_rect = bn::rect(player.x().round_integer(),
@@ -421,7 +452,7 @@ int main()
 
                     bn::sound::stop_all();
 
-                    int enemyIndivSpeed = 0;
+                    enemyIndivSpeed = 0;
                    
                 }
                 else
