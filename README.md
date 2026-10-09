@@ -1,12 +1,12 @@
-# Rainbow Speedway
+# Coin Zombie 
 
-Chase the dot, spin across the screen, and watch the background change color every time you score. Rainbow Speedway is a Game Boy Advance game where you try to collect as many dots as you can.
+Get the skull, but be careful. The more coins you get, the more zombies spawn and come after you! Coin Zombie is a Game Boy Advance game where you try to get as much coins as possible before being overrun by zombies.
 
 ## Play it
 
 [Play Rainbow Speedway here](https://alexandrbalan.github.io/collectathon/)
 
-![Rainbow Speedway gameplay](game.gif)
+![Coin Zombie  gameplay](game.gif)
 
 ## How to play
 
@@ -14,4 +14,5 @@ Chase the dot, spin across the screen, and watch the background change color eve
 - **A button:** speed boost. You only get 3 per game, so use them wisely.
 - **Start:** reset the game.
 - Run off one edge of the screen and you come out the other side.
-- Each dot you grab adds 1 to your score and changes the background to a random color.
+- Each skull you grab adds 1 to your score and changes the background to a random color.
+- Each skull you get, one zombie spawns in. A total of 10 zombies can be spawned in
