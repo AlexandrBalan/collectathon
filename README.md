@@ -1,12 +1,12 @@
-# Coin Zombie 
+# Skull Rush
 
-Get the skull, but be careful. The more coins you get, the more zombies spawn and come after you! Coin Zombie is a Game Boy Advance game where you try to get as much coins as possible before being overrun by zombies.
+Grab the skulls, but be careful. The more skulls you collect, the more zombies spawn and chase after you! Skull Rush is a Game Boy Advance game where you try to collect as many skulls as you can before the zombies catch you.
 
 ## Play it
 
-[Play Rainbow Speedway here](https://alexandrbalan.github.io/collectathon/)
+[Play Skull Rush here](https://alexandrbalan.github.io/collectathon/)
 
-![Coin Zombie  gameplay](game.gif)
+![Skull Rush Gameplay](gameplay.gif)
 
 ## How to play
 
