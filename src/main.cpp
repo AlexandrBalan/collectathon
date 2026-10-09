@@ -13,10 +13,11 @@
 #include <bn_random.h>
 #include <bn_sound_items.h>
 #include <bn_sound.h>
-#include "bn_sprite_items_enemy.h"
+#include "bn_sprite_items_zombie.h"
+#include "bn_sprite_items_skull.h"
 
 #include "bn_sprite_items_dot.h"
-#include "bn_sprite_items_square.h"
+#include "bn_sprite_items_knight.h"
 #include "common_fixed_8x16_font.h"
 #include "bn_music.h"
 
@@ -29,7 +30,7 @@ static constexpr bn::fixed BOOSTEDSPEED = 6;
 // Width and height of the the player and treasure bounding boxes
 static constexpr bn::size PLAYER_SIZE = {8, 8};
 static constexpr bn::size TREASURE_SIZE = {8, 8};
-static constexpr bn::size ENEMY_SIZE = {32, 32};
+static constexpr bn::size ENEMY_SIZE = {16,16};
 
 // Full bounds of the screen
 static constexpr int MIN_Y = -bn::display::height() / 2;
@@ -87,8 +88,9 @@ int main()
     float timer = 0;
     bool speedBoostOn = false;
 
-    bn::sprite_ptr player = bn::sprite_items::square.create_sprite(player_start_x, player_start_y);
-    bn::sprite_ptr treasure = bn::sprite_items::dot.create_sprite(treasure_start_x, treasure_start_y);
+    bn::sprite_ptr player = bn::sprite_items::knight.create_sprite(player_start_x, player_start_y);
+    bn::sprite_ptr treasure = bn::sprite_items::skull.create_sprite(treasure_start_x, treasure_start_y);
+    
     bn::string<16> boosting = "";
 
     bn::vector<bn::sprite_ptr, 16> enemyPool = {};
@@ -281,7 +283,7 @@ int main()
                     
                     timeMinus += 0.35;
 
-                enemyPool.push_back(bn::sprite_items::enemy.create_sprite((rng.get_int() % 20) + bn::display::width(), (rng.get_int() % 20) + bn::display::height()));
+                enemyPool.push_back(bn::sprite_items:: zombie.create_sprite((rng.get_int() % 20) + bn::display::width(), (rng.get_int() % 20) + bn::display::height()));
                 enemySpeed.push_back(.5);
             }
 
