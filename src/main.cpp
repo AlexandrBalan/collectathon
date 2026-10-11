@@ -67,7 +67,7 @@ int main()
 
     bn::backdrop::set_color(bn::color(20, 31, 31));
 
-    bn::sound_items::roundstart.play(soundAudio);
+    bn::sound_items::roundstart.play(soundAudio - 0.2);
 
     soundPool.push_back(bn::sound_items::zombiescream1);
     soundPool.push_back(bn::sound_items::zombiescream2);
@@ -123,14 +123,36 @@ int main()
     
     bn::sprite_text_generator restartGameTextGen(common::fixed_8x16_sprite_font);
     bn::vector<bn::sprite_ptr, 32> restartGameVec;
+
+    bn::sprite_text_generator gunAmmoCount(common::fixed_8x16_sprite_font);
+    bn::vector<bn::sprite_ptr, 32> gunAmmoCountV;
+
+    bn::sprite_text_generator gunName(common::fixed_8x16_sprite_font);
+    bn::vector<bn::sprite_ptr, 32> gunNameV;
     
     int pistolAmmo = 8;
+    int pistolClips = 4;
     float reloadingTime = 60;
-   
-    while (true)
-    {
 
-        
+    /*
+        This vector represents the bullets direction. 
+        This goes with the bulletPool vector.
+        If we store true, this means the bullet is going to the left side of the screen.
+        If we store false, this means the bullet is going to the right side of the screen.
+    */
+    bn::vector<bool, 10> bulletDirection;
+
+    while (true)
+    {   
+
+        bn::string<MAX_SCORE_CHARS> gunAmmoCountString = bn::to_string<MAX_SCORE_CHARS>(pistolAmmo) + bn::to_string<MAX_SCORE_CHARS>("/") + bn::to_string<MAX_SCORE_CHARS>(pistolClips);
+        gunAmmoCountV.clear();
+        gunAmmoCount.generate(88, 73, gunAmmoCountString, gunAmmoCountV);
+
+        bn::string<MAX_SCORE_CHARS> gunNameString = bn::to_string<MAX_SCORE_CHARS>("M1911");
+        gunNameV.clear();
+        gunName.generate(45, 73, gunNameString, gunNameV);
+
         if (bn::keypad::a_pressed()) {
             
             // If we have ammo and we are not reloading
@@ -146,25 +168,51 @@ int main()
                 // Put that bullet in the list and decrement the ammo by one
                 bulletPool.push_back(bullet);
                 pistolAmmo -= 1;
+
+                // If the pistol is not flipped (looking right)
+                if (pistol.horizontal_flip()) {
+                    bulletDirection.push_back(true);
+                }
                 
-            }
-               
+                // If pistol is flipped (looking left)
+                if (!pistol.horizontal_flip()) {
+                    bulletDirection.push_back(false);
+                }      
+            }         
         }
 
         // Loop through the list of bullets
         for (int i = 0; i < bulletPool.size(); i++) {
 
-            // Get the current bullet, increase its speed by the bulletSpeed variable towards positive x
-            bulletPool[i].set_x(bulletPool[i].x() + bulletSpeed);
+            // If the bullet direction is false (meaning that we are shooting to the left side of the screen)
+            if (bulletDirection[i]) {
+
+                // Flip the bullet and make it go towards the left side of the screen
+                bulletPool[i].set_horizontal_flip(true);
+                bulletPool[i].set_x(bulletPool[i].x() - bulletSpeed);
+            }
+
+            // If the bullet direction is true (meaning that we are shooting to the right side of the screen)
+            if (!bulletDirection[i]) {
+
+                // Don't flip the bulletm
+                bulletPool[i].set_horizontal_flip(false);
+
+                // Get the current bullet and make it go towards the right side of the screen.
+                bulletPool[i].set_x(bulletPool[i].x() + bulletSpeed);
+            }
+
+          
 
             // If the bullet is out of bounds, remove it from the list
-            if (bulletPool[i].x() > bn::display::width()) {
+            if (bulletPool[i].x() > bn::display::width() || bulletPool[i].x() < -bn::display::width()) {
                 bulletPool.erase(bulletPool.begin() + i);
+                bulletDirection.erase(bulletDirection.begin() + i);
             }
         }
 
         // If the ammo on the pistol is empty
-        if (pistolAmmo == 0) {
+        if (pistolAmmo == 0 && pistolClips != 0) {
 
             // Play the reloading speed once
             if (reloadingTime == 60) {
@@ -178,6 +226,7 @@ int main()
             if (reloadingTime <= 0) {
                 reloadingTime = 60;
                 pistolAmmo = 8;
+                pistolClips -= 1;
             }
         }
 
@@ -217,6 +266,8 @@ int main()
 
             // If the a button is pressed, stop all music and restart the game
             if (bn::keypad::a_pressed()) {
+
+                // Stop both music and sounds
                 bn::music::stop();
                 bn::sound::stop_all();
 
@@ -226,39 +277,45 @@ int main()
                 counterToSecretSong = 0;
 
 
+
                 bn::sound_items::roundstart.play();
+                
+
+                // Set all entites back to position
+                player.set_x(player_start_x);
+                player.set_y(player_start_y);
+
+                pistol.set_x(pistol_start_x);
+                pistol.set_y(pistol_start_y);
+
+                treasure.set_x(treasure_start_x);
+                treasure.set_y(treasure_start_y);
+
+                // Reset each list
+                enemyPool.clear();
+                enemySpeed.clear();
+                bulletPool.clear();
+                bulletDirection.clear();
                 textEndedV.clear();
                 restartGameVec.clear();
-                
-            
 
-                    // Set all entites back to position
-                    player.set_x(player_start_x);
-                    player.set_y(player_start_y);
+                // Reset the pistol stats
+                pistolAmmo = 8;
+                pistolClips = 4;
 
-                    pistol.set_x(pistol_start_x);
-                    pistol.set_y(pistol_start_y);
+                score = 0;
 
-                    treasure.set_x(treasure_start_x);
-                    treasure.set_y(treasure_start_y);
+                timeDelay = 200;
+                timeMinus = 0;
 
-                    // Reset each list
-                    enemyPool.clear();
-                    enemySpeed.clear();
+                // Change users speed back to normal, put speed boost turns back to 3, reset timer and turn off speed boost mode
+                playersCurrentSpeed = (int)SPEED;
+                speedBoostTurns = 3;
+                timer = 0;
+                speedBoostOn = false;
 
-                    score = 0;
-
-                    timeDelay = 200;
-                    timeMinus = 0;
-
-                    // Change users speed back to normal, put speed boost turns back to 3, reset timer and turn off speed boost mode
-                    playersCurrentSpeed = (int)SPEED;
-                    speedBoostTurns = 3;
-                    timer = 0;
-                    speedBoostOn = false;
-
-                    // Change background to how it was at the start of game
-                    bn::backdrop::set_color(bn::color(20, 31, 31));
+                // Change background to how it was at the start of game
+                bn::backdrop::set_color(bn::color(20, 31, 31));
             }
 
             
@@ -273,12 +330,23 @@ int main()
         {
             player.set_x(player.x() - playersCurrentSpeed);
             pistol.set_x(pistol.x() - playersCurrentSpeed);
+
+            player.set_horizontal_flip(true);
+            pistol.set_horizontal_flip(true);
+
+            pistol.set_x(player.x() - 6);
         }
 
         if (bn::keypad::right_held())
         {
             player.set_x(player.x() + playersCurrentSpeed);
             pistol.set_x(pistol.x() + playersCurrentSpeed);
+
+            player.set_horizontal_flip(false);
+            pistol.set_horizontal_flip(false);
+
+            pistol.set_x(player.x() + 5);
+
         }
         if (bn::keypad::up_held())
         {
