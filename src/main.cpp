@@ -29,10 +29,11 @@
 static constexpr bn::fixed SPEED = 1;
 static constexpr bn::fixed BOOSTEDSPEED = 6;
 
-// Width and height of the the player and treasure bounding boxes
+// Width and height of entities in game
 static constexpr bn::size PLAYER_SIZE = {8, 8};
 static constexpr bn::size TREASURE_SIZE = {8, 8};
 static constexpr bn::size ENEMY_SIZE = {16,16};
+static constexpr bn::size BULLET_SIZE = {8,8};
 
 // Full bounds of the screen
 static constexpr int MIN_Y = -bn::display::height() / 2;
@@ -97,11 +98,21 @@ int main()
     
     bn::string<16> boosting = "";
 
-    bn::vector<bn::sprite_ptr, 20> bulletPool = {};
+    // Variables for bullets
+    bn::vector<bn::sprite_ptr, 40> bulletPool = {};
     bn::fixed bulletSpeed = 3;
+    /*
+        This vector represents the bullets direction. 
+        This goes with the bulletPool vector.
+        If we store true, this means the bullet is going to the left side of the screen.
+        If we store false, this means the bullet is going to the right side of the screen.
+    */
+    bn::vector<bool, 40> bulletDirection;
 
+    // Vector for enemy related
     bn::vector<bn::sprite_ptr, 16> enemyPool = {};
     bn::vector<bn::fixed, 16> enemySpeed = {};
+    bn::vector<int, 16> enemyHealth = {};
 
     // Rotation of player
     int rotation = 0;
@@ -134,14 +145,6 @@ int main()
     int pistolClips = 4;
     float reloadingTime = 60;
 
-    /*
-        This vector represents the bullets direction. 
-        This goes with the bulletPool vector.
-        If we store true, this means the bullet is going to the left side of the screen.
-        If we store false, this means the bullet is going to the right side of the screen.
-    */
-    bn::vector<bool, 10> bulletDirection;
-
     while (true)
     {   
 
@@ -165,24 +168,31 @@ int main()
                 bn::sprite_ptr bullet = bn::sprite_items::bullet.create_sprite(pistol.x() + 1, pistol.y());
                 bullet.set_scale(0.65);
                 
-                // Put that bullet in the list and decrement the ammo by one
-                bulletPool.push_back(bullet);
-                pistolAmmo -= 1;
+                // If both vectors are not full (safety check)
+                if (!bulletDirection.full() && !bulletPool.full()) {
 
-                // If the pistol is not flipped (looking right)
-                if (pistol.horizontal_flip()) {
-                    bulletDirection.push_back(true);
-                }
+                    // If the pistol is not flipped (looking right)
+                    if (pistol.horizontal_flip()) {
+                        bulletDirection.push_back(true);
+                    }
+                    
+                    // If pistol is flipped (looking left)
+                    if (!pistol.horizontal_flip()) {
+                        bulletDirection.push_back(false);
+                    }  
+
+                    // Put that bullet in the list and decrement the ammo by one
+                    bulletPool.push_back(bullet);
                 
-                // If pistol is flipped (looking left)
-                if (!pistol.horizontal_flip()) {
-                    bulletDirection.push_back(false);
-                }      
+                }
+  
+                pistolAmmo -= 1;
+                   
             }         
         }
 
         // Loop through the list of bullets
-        for (int i = 0; i < bulletPool.size(); i++) {
+        for (int i = bulletPool.size() - 1; i >= 0; i--) {
 
             // If the bullet direction is false (meaning that we are shooting to the left side of the screen)
             if (bulletDirection[i]) {
@@ -205,10 +215,11 @@ int main()
           
 
             // If the bullet is out of bounds, remove it from the list
-            if (bulletPool[i].x() > bn::display::width() || bulletPool[i].x() < -bn::display::width()) {
+            if (bulletPool[i].x() > MAX_X || bulletPool[i].x() < MIN_X) {
                 bulletPool.erase(bulletPool.begin() + i);
                 bulletDirection.erase(bulletDirection.begin() + i);
             }
+            
         }
 
         // If the ammo on the pistol is empty
@@ -481,17 +492,21 @@ int main()
             bn::backdrop::set_color(bn::color(rng.get_int(15, 31), rng.get_int(15, 31), rng.get_int(15, 31)));
 
             // If the list is less than 10, add a new enemy and make their speed to 1
-            if (enemyPool.size() <= 10)
+            
+            // We added our first zombie
+            if (enemyPool.size() < 1) {
+                soundPool.at(rng.get_int() % soundPool.size()).play(soundAudio);    
+            }
+            
+            // If the vector is not full (safety check), add an ememy
+            if (!enemyPool.full())
             {
-                    // We added our first zombie
-                    if (enemyPool.size() < 1) {
-                        soundPool.at(rng.get_int() % soundPool.size()).play(soundAudio);    
-                    }
                     
-                    timeMinus += 0.35;
+                timeMinus += 0.2;
 
                 enemyPool.push_back(bn::sprite_items:: zombie.create_sprite((rng.get_int() % 20) + bn::display::width(), (rng.get_int() % 20) + bn::display::height()));
                 enemySpeed.push_back(.5);
+                enemyHealth.push_back(100);
             }
 
             score++;
@@ -602,9 +617,43 @@ int main()
         // Update RNG seed every frame so we don't get the same sequence of positions every time
         rng.update();
 
+        // Loop through the enemyPool vector
+            for (int i = enemyPool.size() - 1; i >= 0; i--) {
+               
+                // Get a box around them
+                bn::rect enemy = bn::rect(enemyPool[i].x().round_integer(),
+                                                enemyPool[i].y().round_integer(),
+                                                ENEMY_SIZE.width(),
+                                                ENEMY_SIZE.height());
+                
+                // Loop through the bullet vector
+                for (int j = bulletPool.size() - 1; j >= 0; j--) {
+
+                    // Get a box around the bullet
+                    bn::rect bullet = bn::rect(bulletPool[j].x().round_integer(),
+                                                bulletPool[j].y().round_integer(),
+                                                BULLET_SIZE.width(),
+                                                BULLET_SIZE.height());
+
+                    // If the bullet touches a enemy, remove health and remove the bullet + bullet direction
+                    if (bullet.intersects(enemy)) {
+                        enemyHealth[i] -= 40;
+                        bulletPool.erase(bulletPool.begin() + j);
+                        bulletDirection.erase(bulletDirection.begin() + j);
+                    }
+
+                   
+                }
+                
+                // If the health of the enemy is below 0, remove the enemy + related enemy stats
+                 if (enemyHealth[i] <= 0) {
+                        enemyPool.erase(enemyPool.begin() + i);
+                        enemySpeed.erase(enemySpeed.begin() + i);
+                        enemyHealth.erase(enemyHealth.begin() + i);
+                }
+            }
         }
 
-        
         bn::core::update();
     }
 }
